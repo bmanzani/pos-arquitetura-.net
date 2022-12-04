@@ -1,10 +1,11 @@
-using ToDo.Web.Mvc.Extensions;
+using ToDo.CrossCutting.IoC;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.ConfigureDependencyInjection();
+builder.Services.RegistrerServices();
+builder.Services.ConfigureAutoMapper();
 
 var app = builder.Build();
 

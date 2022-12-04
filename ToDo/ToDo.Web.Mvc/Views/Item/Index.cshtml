@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ToDo.Domain.Entities.Item>
+﻿@model IEnumerable<ToDo.Application.Dtos.Item.ItemResponseDto>
 
 @{
 	ViewData["title"] = "Index";
@@ -19,7 +19,7 @@
 		{
 			<tr>
 				<td>@item.Description</td>
-				<td>@item.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+				<td>@item.CreatedAt</td>
 				<td><input type="checkbox" disabled @(item.Done ? "checked" : "") action="" /></td>
 				<td><button name="Editar" @(item.Done ? "enabled" : "disabled") onclick="location.href='@Url.Action("Edit", "Item", new {Id = @item.Id, Description = @item.Description, Done = item.Done})'">Editar</button></td>
 				<td><button name="Delete" onclick="location.href='@Url.Action("Exclude", "Item", new {id = item.Id})'" >Delete</button></td>

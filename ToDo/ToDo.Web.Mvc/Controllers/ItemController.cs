@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Specialized;
+using ToDo.Application.Dtos.Item;
+using ToDo.Application.Interfaces;
 using ToDo.Domain.Entities;
 using ToDo.Domain.Interface;
 using ToDo.Web.Mvc.Models;
@@ -8,15 +10,15 @@ namespace ToDo.Web.Mvc.Controllers
 {
 	public class ItemController : Controller
 	{
-		protected IITemRepository repository;
+		protected IItemAppService _service;
 
-		public ItemController(IITemRepository repository)
+		public ItemController(IItemAppService service)
 		{
-			this.repository = repository;
+			_service = service;
 		}
 		public async Task<IActionResult> Index()
 		{
-			var items = await repository.GetAllAsync();
+			var items = await _service.GetAllAsync();
 			return View(items);
 		}
 
@@ -26,21 +28,21 @@ namespace ToDo.Web.Mvc.Controllers
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> Create([Bind("Description")] CreateItemModel createItemModel)
+		public async Task<IActionResult> Create([Bind("Description")] CreateItemRequestDto dto)
 		{
 			if (ModelState.IsValid)
 			{
-				var item = new Item(createItemModel.Description);
-				await repository.AddAsync(item);
+				var item = new Item(dto.Description);
+				await _service.AddAsync(dto);
 				return RedirectToAction(nameof(Index));
 			}
 
-			return View(createItemModel);
+			return View(dto);
 		}
 
 		public async Task<IActionResult> Exclude(Guid id)
 		{
-			await repository.ExcludeAsync(id);
+			await _service.ExcludeAsync(id);
 			return RedirectToAction(nameof(Index));
 		}
 
@@ -53,7 +55,7 @@ namespace ToDo.Web.Mvc.Controllers
 		}
 		public async Task<IActionResult> Editar(EditItemModel editItemModel)
 		{
-			await repository.EditAsync(editItemModel.Id, editItemModel.Description, editItemModel.Done);
+			await _service.EditAsync(editItemModel.Id, editItemModel.Description, editItemModel.Done);
 			return RedirectToAction(nameof(Index));
 		}
 	}
